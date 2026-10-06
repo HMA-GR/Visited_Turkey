@@ -27,7 +27,7 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 - **Sıfırla** bütün seçimleri siler.
 - **Haritayı İndir** haritayı ve seçili il sayısını `turkeyvisited.png` olarak indirir.
 - Dar ekranlarda harita yatay olarak kaydırılabilir.
-- Sol üstteki **i** düğmesi boş bilgi panelini açar. Açıklama metni henüz eklenmemiştir.
+- Sol üstteki **i** düğmesi kısa kullanım açıklamasını açar.
 
 ## Dosyalar
 

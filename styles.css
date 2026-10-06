@@ -34,10 +34,16 @@ html {
     box-sizing: border-box;
     width: min(250px, calc(100vw - 32px));
     min-height: 90px;
+    padding: 36px 12px 12px;
     border: 1px solid #333;
     border-radius: 8px;
     background: #fff2e3;
     box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+}
+
+#info_text {
+    margin: 0;
+    font: 14px/1.45 sans-serif;
 }
 
 #info_panel[hidden] {
