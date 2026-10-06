@@ -16,8 +16,10 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 
 ## Kullanım
 
-- Seçilmemiş bir ilin üzerine gelince `#AAE09C` rengi görünür. İl adları 10 pt Comic Neue ile yazılır.
-- Bir ile tıklayınca il `#16B816` yeşiliyle işaretlenir ve ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Birden fazla yıl için **Yeni yıl ekle** düğmesini kullanın ve **Kaydet** düğmesine basın.
+- Seçilmemiş bir ilin üzerine gelince `#DEF3D7` rengi görünür. İl adları 10 pt Comic Neue ile yazılır.
+- Bir ile tıklayınca ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Birden fazla ziyaret için **Yeni yıl ekle** düğmesini kullanın ve **Kaydet** düğmesine basın. Aynı yıl birden fazla kez girilebilir.
+- Son ziyaretten bu yana geçen yıl sayısı, tarayıcının bulunduğu yıl eksi son ziyaret yılı olarak hesaplanır. Fark 0–3 ise il `#16B816`, 4–6 ise `#72CD61`, 7–10 ise `#98DA89`, 10'dan fazlaysa `#BCE7B0` görünür. Son üç yılda birden fazla ziyaret varsa il adı `#FFD700` olur. Yılı henüz girilmemiş eski işaretlemeler `#16B816` kalır.
+- Renkler kaydedilen yıllardan yeniden hesaplanır; açık sayfada 1 Ocak'ta ve sekmeye geri dönüldüğünde güncellenir.
 - Seçili ilin üzerine gelince en yeni üç yıl görünür. Daha fazla yıl varsa sonuna `...` eklenir; bütün yılları görmek veya düzenlemek için ile tıklayın.
 - İlin işaretini kaldırmak için seçili ile tıklayıp **İşareti kaldır** düğmesini kullanın.
 - Sayaç seçili il sayısını gösterir.
@@ -25,6 +27,7 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 - **Sıfırla** bütün seçimleri siler.
 - **Haritayı İndir** haritayı ve seçili il sayısını `turkeyvisited.png` olarak indirir.
 - Dar ekranlarda harita yatay olarak kaydırılabilir.
+- Sol üstteki **i** düğmesi boş bilgi panelini açar. Açıklama metni henüz eklenmemiştir.
 
 ## Dosyalar
 

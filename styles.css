@@ -12,16 +12,46 @@ html {
     background-size: cover;
 }
 
-#welcome_text {
-    color: #fff2e3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 3%;
-    font-family: sans-serif;
-    font-size: 2.5em;
-    text-shadow: 0 0 3.5px #000;
-    font-weight: bold;
+#info_button {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 11;
+    width: 38px;
+    height: 38px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    background: #fff2e3;
+    font: bold 22px sans-serif;
+    cursor: pointer;
+}
+
+#info_panel {
+    position: absolute;
+    top: 62px;
+    left: 16px;
+    z-index: 11;
+    box-sizing: border-box;
+    width: min(250px, calc(100vw - 32px));
+    min-height: 90px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #fff2e3;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+}
+
+#info_panel[hidden] {
+    display: none;
+}
+
+#close_info {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border: 0;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
 }
 
 #city_count_text {
@@ -45,8 +75,8 @@ html {
     margin-left: auto;
     margin-right: auto;
     margin-top: 5%;
-    width: 1250px;
-    height: 550px;
+    width: 1375px;
+    height: 605px;
     background-color: #e3e2df;
 }
 
@@ -143,25 +173,25 @@ html {
     margin-top: 1em;
 }
 
-@media (max-width: 1300px) {
-    #welcome_text, #city_count_text {
+@media (max-width: 1425px) {
+    #city_count_text {
         font-size: clamp(1.3rem, 5vw, 2.5rem);
         text-align: center;
     }
 
     #map_container {
         width: calc(100vw - 24px);
-        max-width: 1250px;
-        height: 800px;
+        max-width: 1375px;
+        height: 880px;
         justify-content: flex-start;
         overflow-x: auto;
         overflow-y: hidden;
     }
 
     #map_container svg {
-        flex: 0 0 1200px;
-        width: 1200px;
-        height: 800px;
+        flex: 0 0 1320px;
+        width: 1320px;
+        height: 880px;
     }
 
     #buttonGroup {

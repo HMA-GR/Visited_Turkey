@@ -1,5 +1,6 @@
-const HOVER_COLOR = "#AAE09C";
-const SELECTED_COLOR = "#16B816";
+const HOVER_COLOR = "#DEF3D7";
+const RECENT_COLOR = "#16B816";
+const MULTIPLE_RECENT_LABEL_COLOR = "#FFD700";
 const MAP_COLOR = "#fff2e3";
 const STORAGE_KEY = "selectedCities";
 const YEARS_KEY = "visitedCityYears";
@@ -21,8 +22,7 @@ try {
     for (const [name, value] of Object.entries(stored)) {
       // Older versions stored one year as a string. Keep those visits.
       const years = Array.isArray(value) ? value : [value];
-      cityYears[name] = [...new Set(years.map(Number).filter(Number.isInteger))]
-        .sort((a, b) => b - a);
+      cityYears[name] = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
     }
   }
 } catch {
@@ -33,9 +33,62 @@ const yearBox = document.getElementById("year_box");
 const yearDisplay = document.getElementById("year_display");
 const yearForm = document.getElementById("year_form");
 const yearInputs = document.getElementById("year_inputs");
+const infoButton = document.getElementById("info_button");
+const infoPanel = document.getElementById("info_panel");
 let boxMode = "hidden";
 let activeCity = null;
 let boxAnchor = null;
+
+function cityStyle(name) {
+  if (!selectedCities.has(name)) return { fill: MAP_COLOR, label: "black" };
+
+  const years = cityYears[name] || [];
+  if (!years.length) return { fill: RECENT_COLOR, label: "black" };
+
+  const currentYear = new Date().getFullYear();
+  const yearsSinceVisit = currentYear - years[0];
+  if (yearsSinceVisit <= 3) {
+    const recentVisits = years.filter(year => currentYear - year >= 0 && currentYear - year <= 3).length;
+    return {
+      fill: RECENT_COLOR,
+      label: recentVisits > 1 ? MULTIPLE_RECENT_LABEL_COLOR : "black"
+    };
+  }
+  if (yearsSinceVisit <= 6) return { fill: "#72CD61", label: "black" };
+  if (yearsSinceVisit <= 10) return { fill: "#98DA89", label: "black" };
+  return { fill: "#BCE7B0", label: "black" };
+}
+
+function refreshMapColors() {
+  d3.selectAll("#map_container path")
+    .attr("fill", d => cityStyle(d.properties.name).fill);
+  d3.selectAll("#map_container text")
+    .attr("fill", d => cityStyle(d.properties.name).label);
+}
+
+function scheduleNewYearRefresh() {
+  const now = new Date();
+  const nextYear = new Date(now.getFullYear() + 1, 0, 1);
+  const oneDay = 24 * 60 * 60 * 1000;
+  setTimeout(function () {
+    refreshMapColors();
+    scheduleNewYearRefresh();
+  }, Math.max(1000, Math.min(nextYear - now + 1000, oneDay)));
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (!document.hidden) refreshMapColors();
+});
+
+infoButton.addEventListener("click", function () {
+  infoPanel.hidden = !infoPanel.hidden;
+  infoButton.setAttribute("aria-expanded", String(!infoPanel.hidden));
+});
+document.getElementById("close_info").addEventListener("click", function () {
+  infoPanel.hidden = true;
+  infoButton.setAttribute("aria-expanded", "false");
+  infoButton.focus();
+});
 
 function addYearInput(value = "") {
   const input = document.createElement("input");
@@ -98,9 +151,11 @@ function editVisitYear(name, event) {
 yearForm.addEventListener("submit", function (event) {
   event.preventDefault();
   if (!yearForm.reportValidity()) return;
-  cityYears[activeCity] = [...new Set([...yearInputs.children].map(input => Number(input.value)))]
+  cityYears[activeCity] = [...yearInputs.children]
+    .map(input => Number(input.value))
     .sort((a, b) => b - a);
   localStorage.setItem(YEARS_KEY, JSON.stringify(cityYears));
+  refreshMapColors();
   hideYearBox();
 });
 
@@ -116,9 +171,7 @@ document.getElementById("remove_city").addEventListener("click", function () {
   delete cityYears[name];
   localStorage.setItem(YEARS_KEY, JSON.stringify(cityYears));
   saveSelection();
-  d3.selectAll("#map_container path")
-    .filter(d => d.properties.name === name)
-    .attr("fill", MAP_COLOR);
+  refreshMapColors();
   hideYearBox();
 });
 
@@ -139,8 +192,8 @@ function saveSelection() {
 updateCount();
 
 d3.json("tr-cities.json").then(function (data) {
-  const width = 1200;
-  const height = 800;
+  const width = 1320;
+  const height = 880;
   const projection = d3.geoEqualEarth().fitSize([width, height], data);
   const path = d3.geoPath().projection(projection);
 
@@ -156,17 +209,17 @@ d3.json("tr-cities.json").then(function (data) {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", d => selectedCities.has(d.properties.name) ? SELECTED_COLOR : MAP_COLOR)
+    .attr("fill", d => cityStyle(d.properties.name).fill)
     .attr("stroke", "#000")
     .on("mouseover", function (d) {
-      d3.select(this).attr("fill", selectedCities.has(d.properties.name) ? SELECTED_COLOR : HOVER_COLOR);
+      d3.select(this).attr("fill", selectedCities.has(d.properties.name) ? cityStyle(d.properties.name).fill : HOVER_COLOR);
       if (selectedCities.has(d.properties.name)) showVisitYear(d.properties.name, d3.event);
     })
     .on("mousemove", function (d) {
       if (boxMode === "hover" && activeCity === d.properties.name) positionYearBox(d3.event);
     })
     .on("mouseout", function (d) {
-      d3.select(this).attr("fill", selectedCities.has(d.properties.name) ? SELECTED_COLOR : MAP_COLOR);
+      d3.select(this).attr("fill", cityStyle(d.properties.name).fill);
       if (boxMode === "hover" && activeCity === d.properties.name) hideYearBox();
     })
     .on("click", function (d) {
@@ -175,7 +228,7 @@ d3.json("tr-cities.json").then(function (data) {
         selectedCities.add(name);
         saveSelection();
       }
-      d3.select(this).attr("fill", SELECTED_COLOR);
+      refreshMapColors();
       editVisitYear(name, d3.event);
     });
 
@@ -190,7 +243,10 @@ d3.json("tr-cities.json").then(function (data) {
     .attr("text-anchor", "middle")
     .attr("font-family", "Comic Neue")
     .attr("font-size", "10pt")
+    .attr("fill", d => cityStyle(d.properties.name).label)
     .attr("pointer-events", "none");
+
+  scheduleNewYearRefresh();
 }).catch(function (error) {
   console.error("İl haritası yüklenemedi:", error);
   document.getElementById("map_container").textContent = "Harita yüklenemedi.";
@@ -212,6 +268,7 @@ function downloadMap() {
         label.style.visibility = "hidden";
         return {
           name: label.textContent,
+          color: label.getAttribute("fill") || "black",
           x: svgBounds.left - mapBounds.left + Number(label.getAttribute("x")),
           y: svgBounds.top - mapBounds.top + Number(label.getAttribute("y"))
         };
@@ -221,12 +278,15 @@ function downloadMap() {
     const context = canvas.getContext("2d");
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.font = '10pt "Comic Neue"';
-    context.fillStyle = "black";
     context.textAlign = "center";
     context.textBaseline = "alphabetic";
-    labels.forEach(label => context.fillText(label.name, label.x, label.y));
+    labels.forEach(function (label) {
+      context.fillStyle = label.color;
+      context.fillText(label.name, label.x, label.y);
+    });
 
     context.font = "20px sans-serif";
+    context.fillStyle = "black";
     context.textAlign = "start";
     context.textBaseline = "top";
     context.fillText(`${selectedCities.size}/81`, 10, 5);
@@ -252,6 +312,6 @@ function resetButton() {
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(YEARS_KEY);
   updateCount();
-  d3.selectAll("#map_container path").attr("fill", MAP_COLOR);
+  refreshMapColors();
   hideYearBox();
 }

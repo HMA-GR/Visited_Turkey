@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TurkeyVisited</title>
-  <link rel="stylesheet" href="styles.css?v=multi-years-1">
+  <link rel="stylesheet" href="styles.css?v=visit-colors-1">
 
   <script src="vendor/d3.v5.min.js"></script>
   <script src="vendor/html2canvas.min.js"></script>
@@ -13,7 +13,10 @@
 
 <body>
 
-  <div id="welcome_text">Ziyaret ettiğiniz illeri aşağıdan işaretleyebilirsiniz!</div>
+  <button id="info_button" type="button" aria-label="Kullanım bilgisi" aria-controls="info_panel" aria-expanded="false">i</button>
+  <aside id="info_panel" role="dialog" aria-label="Kullanım bilgisi" hidden>
+    <button id="close_info" type="button" aria-label="Kapat">×</button>
+  </aside>
 
   <div id="map_container"></div>
 
@@ -39,7 +42,7 @@
 
   <div id="city_count_text">Seçilen il sayısı:&nbsp;<span id="city_count">0</span>/81</div>
 
-  <script src="turkeyvisited.js?v=multi-years-1"></script>
+  <script src="turkeyvisited.js?v=visit-colors-1"></script>
 
 </body>
 
