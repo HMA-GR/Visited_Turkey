@@ -17,8 +17,8 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 ## Kullanım
 
 - Seçilmemiş bir ilin üzerine gelince `#DEF3D7` rengi görünür. İl adları 10 pt Comic Neue ile yazılır.
-- Bir ile tıklayınca ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Birden fazla ziyaret için **Yeni yıl ekle** düğmesini kullanın ve **Kaydet** düğmesine basın. Aynı yıl birden fazla kez girilebilir.
-- Son ziyaretten bu yana geçen yıl sayısı, tarayıcının bulunduğu yıl eksi son ziyaret yılı olarak hesaplanır. Fark 0–3 ise il `#16B816`, 4–6 ise `#72CD61`, 7–10 ise `#98DA89`, 10'dan fazlaysa `#BCE7B0` görünür. Son üç yılda birden fazla ziyaret varsa il adı `#FFD700` olur. Yılı henüz girilmemiş eski işaretlemeler `#16B816` kalır.
+- Bir ile tıklayınca ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Farklı yıllar için **Yeni yıl ekle** düğmesini kullanın ve **Kaydet** düğmesine basın. Aynı yıl iki kez kaydedilemez; eski tekrarlı kayıtlar da tek yıla indirilir.
+- Son ziyaretten bu yana geçen yıl sayısı, tarayıcının bulunduğu yıl eksi son ziyaret yılı olarak hesaplanır. Fark 0–3 ise il `#16B816`, 4–6 ise `#72CD61`, 7–10 ise `#98DA89`, 10'dan fazlaysa `#BCE7B0` görünür. Son üç yılda birden fazla farklı ziyaret yılı varsa ilin dolgusu `#FFD700` olur; il adı diğer iller gibi kalır. Yılı henüz girilmemiş eski işaretlemeler `#16B816` kalır.
 - Renkler kaydedilen yıllardan yeniden hesaplanır; açık sayfada 1 Ocak'ta ve sekmeye geri dönüldüğünde güncellenir.
 - Seçili ilin üzerine gelince en yeni üç yıl görünür. Daha fazla yıl varsa sonuna `...` eklenir; bütün yılları görmek veya düzenlemek için ile tıklayın.
 - İlin işaretini kaldırmak için seçili ile tıklayıp **İşareti kaldır** düğmesini kullanın.

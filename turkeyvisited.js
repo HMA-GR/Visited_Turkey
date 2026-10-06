@@ -1,6 +1,6 @@
 const HOVER_COLOR = "#DEF3D7";
 const RECENT_COLOR = "#16B816";
-const MULTIPLE_RECENT_LABEL_COLOR = "#FFD700";
+const MULTIPLE_RECENT_COLOR = "#FFD700";
 const MAP_COLOR = "#fff2e3";
 const STORAGE_KEY = "selectedCities";
 const YEARS_KEY = "visitedCityYears";
@@ -19,11 +19,15 @@ try {
   const stored = JSON.parse(localStorage.getItem(YEARS_KEY) || "{}");
   cityYears = {};
   if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+    let needsMigration = false;
     for (const [name, value] of Object.entries(stored)) {
-      // Older versions stored one year as a string. Keep those visits.
+      // Older versions allowed the same year more than once or stored one year as a string.
       const years = Array.isArray(value) ? value : [value];
-      cityYears[name] = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
+      cityYears[name] = [...new Set(years.map(Number).filter(Number.isInteger))]
+        .sort((a, b) => b - a);
+      if (JSON.stringify(value) !== JSON.stringify(cityYears[name])) needsMigration = true;
     }
+    if (needsMigration) localStorage.setItem(YEARS_KEY, JSON.stringify(cityYears));
   }
 } catch {
   cityYears = {};
@@ -50,8 +54,8 @@ function cityStyle(name) {
   if (yearsSinceVisit <= 3) {
     const recentVisits = years.filter(year => currentYear - year >= 0 && currentYear - year <= 3).length;
     return {
-      fill: RECENT_COLOR,
-      label: recentVisits > 1 ? MULTIPLE_RECENT_LABEL_COLOR : "black"
+      fill: recentVisits > 1 ? MULTIPLE_RECENT_COLOR : RECENT_COLOR,
+      label: "black"
     };
   }
   if (yearsSinceVisit <= 6) return { fill: "#72CD61", label: "black" };
@@ -101,8 +105,20 @@ function addYearInput(value = "") {
   input.placeholder = "Örn. 2023";
   input.setAttribute("aria-label", `Ziyaret yılı ${yearInputs.children.length + 1}`);
   input.value = value;
+  input.addEventListener("input", validateUniqueYears);
   yearInputs.appendChild(input);
   return input;
+}
+
+function validateUniqueYears() {
+  const seen = new Set();
+  for (const input of yearInputs.children) {
+    input.setCustomValidity("");
+    if (input.value === "") continue;
+    const year = Number(input.value);
+    if (seen.has(year)) input.setCustomValidity("Bu yıl zaten eklenmiş.");
+    seen.add(year);
+  }
 }
 
 function positionYearBox(event) {
@@ -150,6 +166,7 @@ function editVisitYear(name, event) {
 
 yearForm.addEventListener("submit", function (event) {
   event.preventDefault();
+  validateUniqueYears();
   if (!yearForm.reportValidity()) return;
   cityYears[activeCity] = [...yearInputs.children]
     .map(input => Number(input.value))
