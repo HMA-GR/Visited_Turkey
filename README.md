@@ -16,9 +16,11 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 
 ## Kullanım
 
-- Bir ile tıklamak seçimi açar veya kapatır. Seçili il `#16B816` yeşiliyle görünür; il adları 7 pt Comic Neue ile yazılır.
+- Seçilmemiş bir ilin üzerine gelince `#AAE09C` rengi görünür. İl adları 10 pt Comic Neue ile yazılır.
+- Bir ile tıklayınca il `#16B816` yeşiliyle işaretlenir ve ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Seçili ilin üzerine gelince kayıtlı yıl görünür.
+- Yılı değiştirmek veya ilin işaretini kaldırmak için seçili ile tekrar tıklayın.
 - Sayaç seçili il sayısını gösterir.
-- Seçimler bu tarayıcıdaki `localStorage` alanına kaydedilir ve sayfa yenilense de korunur. Başka cihazlara aktarılmaz.
+- Seçimler ve ziyaret yılları bu tarayıcıdaki `localStorage` alanına kaydedilir ve sayfa yenilense de korunur. Başka cihazlara aktarılmaz.
 - **Sıfırla** bütün seçimleri siler.
 - **Haritayı İndir** haritayı ve seçili il sayısını `turkeyvisited.png` olarak indirir.
 - Dar ekranlarda harita yatay olarak kaydırılabilir.

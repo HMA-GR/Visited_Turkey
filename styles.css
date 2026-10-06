@@ -50,6 +50,44 @@ html {
     background-color: #e3e2df;
 }
 
+.year-box {
+    position: fixed;
+    z-index: 10;
+    min-width: 150px;
+    max-width: min(280px, calc(100vw - 24px));
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #fff2e3;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+    font: 14px sans-serif;
+}
+
+.year-box[hidden], .year-box [hidden] {
+    display: none;
+}
+
+#year_form label, #year_input {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#year_input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+}
+
+.year-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.year-actions button {
+    cursor: pointer;
+}
+
 #download_button {
     margin-left: 335px;
     margin-top: 0.5em;

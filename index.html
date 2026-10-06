@@ -17,6 +17,19 @@
 
   <div id="map_container"></div>
 
+  <div id="year_box" class="year-box" hidden>
+    <div id="year_display" hidden></div>
+    <form id="year_form" hidden>
+      <label for="year_input"><span id="year_city"></span> için ziyaret yılı</label>
+      <input id="year_input" type="number" min="1900" step="1" required placeholder="Örn. 2023">
+      <div class="year-actions">
+        <button type="submit">Kaydet</button>
+        <button id="remove_city" type="button">İşareti kaldır</button>
+        <button id="close_year_box" type="button">Kapat</button>
+      </div>
+    </form>
+  </div>
+
   <div id="buttonGroup">
     <button id="reset_button" onclick="resetButton()">Sıfırla</button>
     <a id="github_logo" href="https://github.com/HMA-GR/Visited_Turkey" target="_blank" rel="noopener noreferrer"><img src="images/GitHub-Mark-32px.png" alt="GitHub deposu"></a>
