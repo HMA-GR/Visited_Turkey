@@ -20,11 +20,12 @@
   <div id="year_box" class="year-box" hidden>
     <div id="year_display" hidden></div>
     <form id="year_form" hidden>
-      <label for="year_input"><span id="year_city"></span> için ziyaret yılı</label>
-      <input id="year_input" type="number" min="1900" step="1" required placeholder="Örn. 2023">
+      <div><span id="year_city"></span> için ziyaret yılları</div>
+      <div id="year_inputs"></div>
       <div class="year-actions">
         <button type="submit">Kaydet</button>
         <button id="remove_city" type="button">İşareti kaldır</button>
+        <button id="add_year" type="button">Yeni yıl ekle</button>
         <button id="close_year_box" type="button">Kapat</button>
       </div>
     </form>

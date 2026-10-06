@@ -17,8 +17,9 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 ## Kullanım
 
 - Seçilmemiş bir ilin üzerine gelince `#AAE09C` rengi görünür. İl adları 10 pt Comic Neue ile yazılır.
-- Bir ile tıklayınca il `#16B816` yeşiliyle işaretlenir ve ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Seçili ilin üzerine gelince kayıtlı yıl görünür.
-- Yılı değiştirmek veya ilin işaretini kaldırmak için seçili ile tekrar tıklayın.
+- Bir ile tıklayınca il `#16B816` yeşiliyle işaretlenir ve ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Birden fazla yıl için **Yeni yıl ekle** düğmesini kullanın ve **Kaydet** düğmesine basın.
+- Seçili ilin üzerine gelince en yeni üç yıl görünür. Daha fazla yıl varsa sonuna `...` eklenir; bütün yılları görmek veya düzenlemek için ile tıklayın.
+- İlin işaretini kaldırmak için seçili ile tıklayıp **İşareti kaldır** düğmesini kullanın.
 - Sayaç seçili il sayısını gösterir.
 - Seçimler ve ziyaret yılları bu tarayıcıdaki `localStorage` alanına kaydedilir ve sayfa yenilense de korunur. Başka cihazlara aktarılmaz.
 - **Sıfırla** bütün seçimleri siler.

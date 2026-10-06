@@ -16,7 +16,15 @@ try {
 let cityYears;
 try {
   const stored = JSON.parse(localStorage.getItem(YEARS_KEY) || "{}");
-  cityYears = stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  cityYears = {};
+  if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+    for (const [name, value] of Object.entries(stored)) {
+      // Older versions stored one year as a string. Keep those visits.
+      const years = Array.isArray(value) ? value : [value];
+      cityYears[name] = [...new Set(years.map(Number).filter(Number.isInteger))]
+        .sort((a, b) => b - a);
+    }
+  }
 } catch {
   cityYears = {};
 }
@@ -24,10 +32,25 @@ try {
 const yearBox = document.getElementById("year_box");
 const yearDisplay = document.getElementById("year_display");
 const yearForm = document.getElementById("year_form");
-const yearInput = document.getElementById("year_input");
-yearInput.max = new Date().getFullYear();
+const yearInputs = document.getElementById("year_inputs");
 let boxMode = "hidden";
 let activeCity = null;
+let boxAnchor = null;
+
+function addYearInput(value = "") {
+  const input = document.createElement("input");
+  input.className = "year-input";
+  input.type = "number";
+  input.min = "1900";
+  input.max = String(new Date().getFullYear());
+  input.step = "1";
+  input.required = true;
+  input.placeholder = "Örn. 2023";
+  input.setAttribute("aria-label", `Ziyaret yılı ${yearInputs.children.length + 1}`);
+  input.value = value;
+  yearInputs.appendChild(input);
+  return input;
+}
 
 function positionYearBox(event) {
   const x = event.clientX || 16;
@@ -48,7 +71,10 @@ function showVisitYear(name, event) {
   boxMode = "hover";
   yearForm.hidden = true;
   yearDisplay.hidden = false;
-  yearDisplay.textContent = `${name}: ${cityYears[name] || "Yıl eklenmedi"}`;
+  const years = cityYears[name] || [];
+  yearDisplay.textContent = `${name}: ${years.length
+    ? years.slice(0, 3).join(", ") + (years.length > 3 ? " ..." : "")
+    : "Yıl eklenmedi"}`;
   yearBox.hidden = false;
   positionYearBox(event);
 }
@@ -59,19 +85,29 @@ function editVisitYear(name, event) {
   yearDisplay.hidden = true;
   yearForm.hidden = false;
   document.getElementById("year_city").textContent = name;
-  yearInput.value = cityYears[name] || "";
+  yearInputs.replaceChildren();
+  const years = cityYears[name] || [];
+  (years.length ? years : [""]).forEach(addYearInput);
   yearBox.hidden = false;
-  positionYearBox(event);
-  yearInput.focus();
-  yearInput.select();
+  boxAnchor = { clientX: event.clientX, clientY: event.clientY };
+  positionYearBox(boxAnchor);
+  yearInputs.firstElementChild.focus();
+  yearInputs.firstElementChild.select();
 }
 
 yearForm.addEventListener("submit", function (event) {
   event.preventDefault();
   if (!yearForm.reportValidity()) return;
-  cityYears[activeCity] = String(Number(yearInput.value));
+  cityYears[activeCity] = [...new Set([...yearInputs.children].map(input => Number(input.value)))]
+    .sort((a, b) => b - a);
   localStorage.setItem(YEARS_KEY, JSON.stringify(cityYears));
   hideYearBox();
+});
+
+document.getElementById("add_year").addEventListener("click", function () {
+  const input = addYearInput();
+  positionYearBox(boxAnchor);
+  input.focus();
 });
 
 document.getElementById("remove_city").addEventListener("click", function () {
