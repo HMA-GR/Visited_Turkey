@@ -1,0 +1,129 @@
+html {
+    height: 100%;
+    background-color: #e3e2df;
+    background-size: cover;
+}
+
+#welcome_text {
+    color: #fff2e3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3%;
+    font-family: sans-serif;
+    font-size: 2.5em;
+    text-shadow: 0 0 3.5px #000;
+    font-weight: bold;
+}
+
+#city_count_text {
+    color: #fff2e3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: auto;
+    font-family: sans-serif;
+    font-size: 2.5em;
+    text-shadow: 0 0 3.5px #000;
+    font-weight: bold;
+}
+
+#map_container {
+    /*border: 3px solid white;
+    border-radius: 10px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    width: 1250px;
+    height: 550px;
+    background-color: #e3e2df;
+}
+
+#download_button {
+    margin-left: 335px;
+    margin-top: 0.5em;
+    padding: 0.5em 1.7em;
+    border: 0.16em solid rgb(255, 255, 255);
+    border-radius: 2em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    color: #000000;
+    text-shadow: 0 0.04em 0.04em rgba(255, 255, 255, 0.253);
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+#download_button:hover {
+    color: black;
+    background-color: #EFAE88;
+}
+
+#github_logo {
+    margin-left: 1000px;
+    opacity: 0.5;
+}
+
+#reset_button {
+    padding: 0.5em 1.7em;
+    border: 0.16em solid rgb(255, 255, 255);
+    border-radius: 2em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    color: #000000;
+    text-shadow: 0 0.04em 0.04em rgba(255, 255, 255, 0.253);
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+#reset_button:hover {
+    color: black;
+    background-color: #EFAE88;
+}
+
+#buttonGroup {
+    margin-left: 335px;
+    margin-top: 1em;
+}
+
+@media (max-width: 1300px) {
+    #welcome_text, #city_count_text {
+        font-size: clamp(1.3rem, 5vw, 2.5rem);
+        text-align: center;
+    }
+
+    #map_container {
+        width: calc(100vw - 24px);
+        max-width: 1250px;
+        height: 800px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    #map_container svg {
+        flex: 0 0 1200px;
+        width: 1200px;
+        height: 800px;
+    }
+
+    #buttonGroup {
+        margin-left: 12px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #github_logo, #download_button {
+        margin-left: 12px;
+    }
+}

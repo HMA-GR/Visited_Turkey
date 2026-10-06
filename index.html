@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TurkeyVisited</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="vendor/d3.v5.min.js"></script>
+  <script src="vendor/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+  <div id="welcome_text">Ziyaret ettiğiniz illeri aşağıdan işaretleyebilirsiniz!</div>
+
+  <div id="map_container"></div>
+
+  <div id="buttonGroup">
+    <button id="reset_button" onclick="resetButton()">Sıfırla</button>
+    <a id="github_logo" href="https://github.com/HMA-GR/Visited_Turkey" target="_blank" rel="noopener noreferrer"><img src="images/GitHub-Mark-32px.png" alt="GitHub deposu"></a>
+  </div>
+  <button id="download_button" onclick="downloadMap()">Haritayı İndir</button>
+
+  <div id="city_count_text">Seçilen il sayısı:&nbsp;<span id="city_count">0</span>/81</div>
+
+  <script src="turkeyvisited.js"></script>
+
+</body>
+
+</html>
