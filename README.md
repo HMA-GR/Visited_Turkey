@@ -16,7 +16,7 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 
 ## Kullanım
 
-- Bir ile tıklamak seçimi açar veya kapatır. Seçili il turuncu görünür.
+- Bir ile tıklamak seçimi açar veya kapatır. Seçili il `#16B816` yeşiliyle görünür; il adları 7 pt Comic Neue ile yazılır.
 - Sayaç seçili il sayısını gösterir.
 - Seçimler bu tarayıcıdaki `localStorage` alanına kaydedilir ve sayfa yenilense de korunur. Başka cihazlara aktarılmaz.
 - **Sıfırla** bütün seçimleri siler.
@@ -29,5 +29,6 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 - `styles.css`: Örneğe yakın görünüm ve dar ekran düzeni.
 - `tr-cities.json`: 81 ilin GeoJSON sınırları.
 - `turkeyvisited.js`: D3 ile çizim, seçim, saklama, sıfırlama ve indirme.
+- `vendor/fonts/`: İl etiketleri için Comic Neue yazı tipi ve SIL Open Font License metni.
 
 GitHub Pages ile yayımlamak için depo ayarlarında **Pages** kaynağı olarak `main` dalının kök (`/`) klasörünü seçin.

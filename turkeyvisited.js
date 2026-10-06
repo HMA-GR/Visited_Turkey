@@ -1,4 +1,5 @@
 const HOVER_COLOR = "#EFAE88";
+const SELECTED_COLOR = "#16B816";
 const MAP_COLOR = "#fff2e3";
 const STORAGE_KEY = "selectedCities";
 
@@ -40,13 +41,13 @@ d3.json("tr-cities.json").then(function (data) {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", d => selectedCities.has(d.properties.name) ? HOVER_COLOR : MAP_COLOR)
+    .attr("fill", d => selectedCities.has(d.properties.name) ? SELECTED_COLOR : MAP_COLOR)
     .attr("stroke", "#000")
-    .on("mouseover", function () {
-      d3.select(this).attr("fill", HOVER_COLOR);
+    .on("mouseover", function (d) {
+      d3.select(this).attr("fill", selectedCities.has(d.properties.name) ? SELECTED_COLOR : HOVER_COLOR);
     })
     .on("mouseout", function (d) {
-      d3.select(this).attr("fill", selectedCities.has(d.properties.name) ? HOVER_COLOR : MAP_COLOR);
+      d3.select(this).attr("fill", selectedCities.has(d.properties.name) ? SELECTED_COLOR : MAP_COLOR);
     })
     .on("click", function (d) {
       const name = d.properties.name;
@@ -55,7 +56,7 @@ d3.json("tr-cities.json").then(function (data) {
       } else {
         selectedCities.add(name);
       }
-      d3.select(this).attr("fill", selectedCities.has(name) ? HOVER_COLOR : MAP_COLOR);
+      d3.select(this).attr("fill", selectedCities.has(name) ? SELECTED_COLOR : MAP_COLOR);
       saveSelection();
     });
 
@@ -68,7 +69,8 @@ d3.json("tr-cities.json").then(function (data) {
     .attr("x", d => path.centroid(d)[0])
     .attr("y", d => path.centroid(d)[1])
     .attr("text-anchor", "middle")
-    .attr("font-size", "10pt")
+    .attr("font-family", "Comic Neue")
+    .attr("font-size", "7pt")
     .attr("pointer-events", "none");
 }).catch(function (error) {
   console.error("İl haritası yüklenemedi:", error);
@@ -77,12 +79,36 @@ d3.json("tr-cities.json").then(function (data) {
 
 function downloadMap() {
   const map = document.getElementById("map_container");
-  // Render at the original desktop width even when the page is viewed on a phone.
-  html2canvas(map, { windowWidth: 1440 }).then(function (canvas) {
+  let labels = [];
+  // html2canvas rasterizes SVG text with a fallback font. Draw the labels on
+  // the resulting canvas with the loaded Comic Neue font instead.
+  document.fonts.load('7pt "Comic Neue"').then(() => html2canvas(map, {
+    windowWidth: 1440,
+    onclone: function (clonedDocument) {
+      const clonedMap = clonedDocument.getElementById("map_container");
+      const svg = clonedMap.querySelector("svg");
+      const mapBounds = clonedMap.getBoundingClientRect();
+      const svgBounds = svg.getBoundingClientRect();
+      labels = [...svg.querySelectorAll("text")].map(function (label) {
+        label.style.visibility = "hidden";
+        return {
+          name: label.textContent,
+          x: svgBounds.left - mapBounds.left + Number(label.getAttribute("x")),
+          y: svgBounds.top - mapBounds.top + Number(label.getAttribute("y"))
+        };
+      });
+    }
+  })).then(function (canvas) {
     const context = canvas.getContext("2d");
     context.setTransform(1, 0, 0, 1, 0, 0);
-    context.font = "20px sans-serif";
+    context.font = '7pt "Comic Neue"';
     context.fillStyle = "black";
+    context.textAlign = "center";
+    context.textBaseline = "alphabetic";
+    labels.forEach(label => context.fillText(label.name, label.x, label.y));
+
+    context.font = "20px sans-serif";
+    context.textAlign = "start";
     context.textBaseline = "top";
     context.fillText(`${selectedCities.size}/81`, 10, 5);
     context.fillText("HMA-GR/Visited_Turkey", 10, canvas.height - 25);
