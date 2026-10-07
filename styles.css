@@ -254,7 +254,7 @@ html {
 
 #buttonGroup {
     margin-left: 335px;
-    margin-top: 1em;
+    margin-top: calc(1em - 100px);
 }
 
 @media (max-width: 1425px) {
