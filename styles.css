@@ -253,8 +253,10 @@ html {
 }
 
 #buttonGroup {
+    position: relative;
+    z-index: 1;
     margin-left: 335px;
-    margin-top: calc(1em - 100px);
+    margin-top: calc(1em - 200px);
 }
 
 @media (max-width: 1425px) {
