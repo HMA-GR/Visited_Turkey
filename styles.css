@@ -76,6 +76,7 @@ html {
     /*border: 3px solid white;
     border-radius: 10px; */
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: center;
     margin-left: auto;
@@ -84,6 +85,48 @@ html {
     width: 1375px;
     height: 605px;
     background-color: #e3e2df;
+}
+
+#map_legend {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 245px;
+    padding: 10px 12px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #fffaf4;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+    font: 12px/1.3 sans-serif;
+}
+
+#map_legend h2 {
+    margin: 0 0 7px;
+    font-size: 14px;
+}
+
+#map_legend ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#map_legend li {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+.legend-color {
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+    border: 1px solid #666;
+    border-radius: 3px;
 }
 
 .year-box {
@@ -228,6 +271,10 @@ html {
         flex: 0 0 1320px;
         width: 1320px;
         height: 880px;
+    }
+
+    #map_legend {
+        width: min(245px, calc(100vw - 48px));
     }
 
     #buttonGroup {

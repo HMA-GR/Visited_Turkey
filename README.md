@@ -29,6 +29,7 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 - **JSON yedeği indir** seçili illeri ve ziyaret yıllarını bir dosyaya kaydeder. **JSON yedeğini yükle** aynı verileri geri getirir; doğrulanan yedek mevcut tarayıcı kayıtlarının yerine geçmeden önce onay ister. Dosya kullanıcının cihazında kalır; hesap veya veritabanı gerekmez.
 - Dar ekranlarda harita yatay olarak kaydırılabilir.
 - Sol üstteki **i** düğmesi kısa kullanım açıklamasını açar.
+- Haritanın sağ üstündeki lejant, ziyaret durumlarına karşılık gelen dolgu renklerini açıklar.
 
 ## Dosyalar
 
