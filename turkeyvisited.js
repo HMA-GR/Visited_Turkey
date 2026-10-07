@@ -382,46 +382,54 @@ d3.json("tr-cities.json").then(function (data) {
   document.getElementById("map_container").textContent = "Harita yüklenemedi.";
 });
 
-function downloadMap() {
-  const map = document.getElementById("map_container");
-  let labels = [];
-  // html2canvas rasterizes SVG text with a fallback font. Draw the labels on
-  // the resulting canvas with the loaded Comic Neue font instead.
-  document.fonts.load('10pt "Comic Neue"').then(() => html2canvas(map, {
-    windowWidth: 1440,
-    onclone: function (clonedDocument) {
-      const clonedMap = clonedDocument.getElementById("map_container");
-      const svg = clonedMap.querySelector("svg");
-      const mapBounds = clonedMap.getBoundingClientRect();
-      const svgBounds = svg.getBoundingClientRect();
-      labels = [...svg.querySelectorAll("text")].map(function (label) {
-        label.style.visibility = "hidden";
-        return {
-          name: label.textContent,
-          color: label.getAttribute("fill") || "black",
-          x: svgBounds.left - mapBounds.left + Number(label.getAttribute("x")),
-          y: svgBounds.top - mapBounds.top + Number(label.getAttribute("y"))
-        };
-      });
-    }
-  })).then(function (canvas) {
-    const context = canvas.getContext("2d");
-    context.setTransform(1, 0, 0, 1, 0, 0);
+async function downloadMap() {
+  const svg = document.querySelector("#map_container svg");
+  if (!svg) return;
+  await document.fonts.load('10pt "Comic Neue"');
+
+  const paths = [...svg.querySelectorAll("path")];
+  const bounds = paths.map(path => path.getBBox());
+  const left = Math.min(...bounds.map(box => box.x));
+  const top = Math.min(...bounds.map(box => box.y));
+  const right = Math.max(...bounds.map(box => box.x + box.width));
+  const bottom = Math.max(...bounds.map(box => box.y + box.height));
+  const padding = 16;
+  const footer = 30;
+  const offsetX = padding - left;
+  const offsetY = padding - top;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.ceil(right - left + padding * 2);
+  canvas.height = Math.ceil(bottom - top + padding * 2 + footer);
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#e3e2df";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  const svgCopy = svg.cloneNode(true);
+  svgCopy.querySelectorAll("text").forEach(label => label.remove());
+  svgCopy.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const svgUrl = URL.createObjectURL(new Blob(
+    [new XMLSerializer().serializeToString(svgCopy)], { type: "image/svg+xml" }
+  ));
+  const image = new Image();
+  image.onload = function () {
+    URL.revokeObjectURL(svgUrl);
+    context.drawImage(image, offsetX, offsetY,
+      Number(svg.getAttribute("width")), Number(svg.getAttribute("height")));
     context.font = '10pt "Comic Neue"';
     context.textAlign = "center";
     context.textBaseline = "alphabetic";
-    labels.forEach(function (label) {
-      context.fillStyle = label.color;
-      context.fillText(label.name, label.x, label.y);
+    svg.querySelectorAll("text").forEach(function (label) {
+      context.fillStyle = label.getAttribute("fill") || "black";
+      context.fillText(label.textContent,
+        Number(label.getAttribute("x")) + offsetX,
+        Number(label.getAttribute("y")) + offsetY);
     });
-
     context.font = "20px sans-serif";
     context.fillStyle = "black";
     context.textAlign = "start";
     context.textBaseline = "top";
     context.fillText(`${selectedCities.size}/81`, 10, 5);
     context.fillText("HMA-GR/Visited_Turkey", 10, canvas.height - 25);
-
     canvas.toBlob(function (blob) {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
@@ -433,7 +441,9 @@ function downloadMap() {
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, "image/png");
-  });
+  };
+  image.onerror = () => URL.revokeObjectURL(svgUrl);
+  image.src = svgUrl;
 }
 
 function resetButton() {

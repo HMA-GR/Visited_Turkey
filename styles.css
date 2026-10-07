@@ -85,14 +85,17 @@ html {
     height: 605px;
     overflow: hidden;
     background-color: #e3e2df;
-    transform: translateX(-40px);
+    /* Move the clipping viewport with the artwork to keep northern borders visible. */
+    transform: translate(-40px, -48px);
 }
 
 #map_container svg {
-    transform: translateY(-40px);
+    transform: translateY(-22px);
 }
 
 #map_legend {
+    position: relative;
+    z-index: 1;
     box-sizing: border-box;
     width: 245px;
     margin: 16px 0 0 auto;
@@ -274,6 +277,7 @@ html {
         flex: 0 0 1320px;
         width: 1320px;
         height: 880px;
+        transform: translateY(-70px);
     }
 
     #map_legend {
