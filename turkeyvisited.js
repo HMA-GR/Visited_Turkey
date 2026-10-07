@@ -391,7 +391,6 @@ function downloadMap() {
     windowWidth: 1440,
     onclone: function (clonedDocument) {
       const clonedMap = clonedDocument.getElementById("map_container");
-      clonedMap.querySelector("#map_legend").remove();
       const svg = clonedMap.querySelector("svg");
       const mapBounds = clonedMap.getBoundingClientRect();
       const svgBounds = svg.getBoundingClientRect();

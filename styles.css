@@ -76,24 +76,22 @@ html {
     /*border: 3px solid white;
     border-radius: 10px; */
     display: flex;
-    position: relative;
     align-items: center;
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 5%;
+    margin-top: 8px;
     width: 1375px;
     height: 605px;
+    overflow: hidden;
     background-color: #e3e2df;
+    transform: translateX(-40px);
 }
 
 #map_legend {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 1;
     box-sizing: border-box;
     width: 245px;
+    margin: 16px 0 0 auto;
     padding: 10px 12px;
     border: 1px solid #333;
     border-radius: 8px;
@@ -265,6 +263,7 @@ html {
         justify-content: flex-start;
         overflow-x: auto;
         overflow-y: hidden;
+        transform: none;
     }
 
     #map_container svg {
@@ -274,7 +273,7 @@ html {
     }
 
     #map_legend {
-        width: min(245px, calc(100vw - 48px));
+        width: min(245px, calc(100vw - 24px));
     }
 
     #buttonGroup {
