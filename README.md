@@ -1,10 +1,35 @@
 # Visited Turkey
 
-Türkiye'de ziyaret ettiğiniz illeri haritada işaretleyin ve haritayı PNG olarak indirin.
+Türkiye'de ziyaret ettiğiniz illeri ve ziyaret yıllarını işaretleyebileceğiniz, [GitHub Pages üzerinde yayımlanan](https://hma-gr.github.io/Visited_Turkey/) statik bir web uygulaması. Hesap, veritabanı veya sunucu tarafı işlem gerekmez.
 
-Bu proje, Ozan Yerli'nin [TurkeyVisited](https://github.com/ozanyerli/turkeyvisited) projesinin görünümünü ve temel işlevlerini başlangıç noktası olarak kullanır. İl sınırları (`tr-cities.json`), ilk HTML/CSS tasarımı ve GitHub simgesi bu projeden alınmıştır. Özgün projenin MIT lisansı [LICENSE](LICENSE) dosyasındadır.
+## Kullanım
 
-## Çalıştırma
+1. Haritada bir ile tıklayın. Ziyaret yılını yazıp **Kaydet** düğmesine veya Enter'a basın. Farklı yıllar için **Yeni yıl ekle** düğmesini kullanın. Aynı yıl bir il için iki kez kaydedilemez. Yıl eklemeden kutuyu kapatırsanız il işaretli kalır.
+2. İşaretli ilin üzerine gelince en yeni üç ziyaret yılı görünür. Daha fazla kayıt varsa `...` gösterilir; ile tekrar tıklayarak bütün yılları görebilir, düzenleyebilir veya **İşareti kaldır** düğmesini kullanabilirsiniz.
+3. **Sıfırla** bu tarayıcıdaki bütün il ve yıl kayıtlarını siler. Haritanın altındaki sayaç işaretli il sayısını gösterir.
+
+Haritanın sağ üstündeki lejant renkleri açıklar. Renk, **bulunulan yıl − en son ziyaret yılı** farkına göre belirlenir:
+
+| Dolgu | Anlamı |
+| --- | --- |
+| `#FFD700` | Son 0–3 yılda farklı yıllarda birden fazla ziyaret |
+| `#16B816` | Son 0–3 yılda tek ziyaret; yıl girilmemiş işaretli iller de bu renkte kalır |
+| `#72CD61` | Son ziyaret 4–6 yıl önce |
+| `#98DA89` | Son ziyaret 7–10 yıl önce |
+| `#BCE7B0` | Son ziyaret 10 yıldan daha eski |
+| `#fff2e3` | Gidilmemiş il |
+
+Gidilmemiş bir ilin üzerine gelince geçici olarak `#DEF3D7` görünür. İl adları 10 pt Comic Neue ile yazılır. Renkler açık sayfada 1 Ocak'ta ve sekmeye geri dönüldüğünde yeniden hesaplanır. Dar ekranlarda harita yatay olarak kaydırılabilir; sol üstteki **i** düğmesi kısa kullanım açıklamasını açar.
+
+## Kayıt ve yedekleme
+
+İşaretler ve ziyaret yılları yalnızca kullandığınız tarayıcının `localStorage` alanında saklanır (`selectedCities` ve `visitedCityYears` anahtarları). Sayfayı yenilediğinizde kalırlar; başka tarayıcıya veya cihaza kendiliğinden aktarılmazlar. Tarayıcı verilerini temizlemek ya da **Sıfırla** düğmesini kullanmak bu kayıtları siler.
+
+- **JSON yedeği indir** işaretli illeri ve yılları `visited-turkey-backup-YYYY-MM-DD.json` dosyasına kaydeder. Dosya cihazınızda kalır.
+- **JSON yedeğini yükle** bu dosyayı doğrular ve mevcut kayıtların üzerine yazmadan önce onay ister. Geçersiz dosya mevcut kayıtları değiştirmez. Başka tarayıcıya geçmek için önce yedeği indirin, sonra orada yükleyin.
+- **Haritayı İndir** il renklerini, adlarını ve sayacı `turkeyvisited.png` olarak kaydeder. PNG, etkileşimli kayıtları veya lejantı içermez; kayıtları geri yüklemek için JSON yedeğini kullanın.
+
+## Yerel çalıştırma
 
 Depo klasöründe bir yerel sunucu başlatın:
 
@@ -12,31 +37,15 @@ Depo klasöründe bir yerel sunucu başlatın:
 python3 -m http.server 8000
 ```
 
-Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği için sayfayı `file://` adresinden açmayın. Kurulum veya derleme adımı gerekmez. D3 v5 ve html2canvas 1.3.2 dosyaları `vendor/` altında tutulur; lisansları aynı klasördedir.
+Ardından `http://localhost:8000` adresini açın. GeoJSON dosyası ağ isteğiyle yüklendiğinden sayfayı `file://` adresinden açmayın. Kurulum, derleme adımı veya dış API anahtarı gerekmez. Yayımlamak için GitHub Pages kaynağını `main` dalının kök (`/`) klasörü olarak ayarlayın.
 
-## Kullanım
+## Dosyalar ve kaynaklar
 
-- Seçilmemiş bir ilin üzerine gelince `#DEF3D7` rengi görünür. İl adları 10 pt Comic Neue ile yazılır.
-- Bir ile tıklayınca ziyaret yılı kutusu açılır. Yılı yazıp Enter tuşuna basın. Farklı yıllar için **Yeni yıl ekle** düğmesini kullanın ve **Kaydet** düğmesine basın. Aynı yıl iki kez kaydedilemez; eski tekrarlı kayıtlar da tek yıla indirilir.
-- Son ziyaretten bu yana geçen yıl sayısı, tarayıcının bulunduğu yıl eksi son ziyaret yılı olarak hesaplanır. Fark 0–3 ise il `#16B816`, 4–6 ise `#72CD61`, 7–10 ise `#98DA89`, 10'dan fazlaysa `#BCE7B0` görünür. Son üç yılda birden fazla farklı ziyaret yılı varsa ilin dolgusu `#FFD700` olur; il adı diğer iller gibi kalır. Yılı henüz girilmemiş eski işaretlemeler `#16B816` kalır.
-- Renkler kaydedilen yıllardan yeniden hesaplanır; açık sayfada 1 Ocak'ta ve sekmeye geri dönüldüğünde güncellenir.
-- Seçili ilin üzerine gelince en yeni üç yıl görünür. Daha fazla yıl varsa sonuna `...` eklenir; bütün yılları görmek veya düzenlemek için ile tıklayın.
-- İlin işaretini kaldırmak için seçili ile tıklayıp **İşareti kaldır** düğmesini kullanın.
-- Sayaç seçili il sayısını gösterir.
-- Seçimler ve ziyaret yılları bu tarayıcıdaki `localStorage` alanına kaydedilir ve sayfa yenilense de korunur. Başka cihazlara aktarılmaz.
-- **Sıfırla** bütün seçimleri siler.
-- **Haritayı İndir** haritayı ve seçili il sayısını `turkeyvisited.png` olarak indirir.
-- **JSON yedeği indir** seçili illeri ve ziyaret yıllarını bir dosyaya kaydeder. **JSON yedeğini yükle** aynı verileri geri getirir; doğrulanan yedek mevcut tarayıcı kayıtlarının yerine geçmeden önce onay ister. Dosya kullanıcının cihazında kalır; hesap veya veritabanı gerekmez.
-- Dar ekranlarda harita yatay olarak kaydırılabilir.
-- Sol üstteki **i** düğmesi kısa kullanım açıklamasını açar.
-- Haritanın sağ üstündeki lejant, ziyaret durumlarına karşılık gelen dolgu renklerini açıklar.
-
-## Dosyalar
-
-- `index.html`: Sayfa iskeleti ve düğmeler.
-- `styles.css`: Örneğe yakın görünüm ve dar ekran düzeni.
+- `index.html`: Sayfa, lejant ve denetimler.
+- `styles.css`: Masaüstü ve dar ekran yerleşimi.
+- `turkeyvisited.js`: D3 ile harita çizimi, il/yıl kayıtları, renkler, JSON ve PNG işlemleri.
 - `tr-cities.json`: 81 ilin GeoJSON sınırları.
-- `turkeyvisited.js`: D3 ile çizim, seçim, saklama, sıfırlama ve indirme.
-- `vendor/fonts/`: İl etiketleri için Comic Neue yazı tipi ve SIL Open Font License metni.
+- `vendor/d3.v5.min.js`: Yerel D3 v5 kopyası; lisansı `vendor/LICENSE.d3`.
+- `vendor/fonts/`: Comic Neue yazı tipi ve `OFL.txt` lisansı.
 
-GitHub Pages ile yayımlamak için depo ayarlarında **Pages** kaynağı olarak `main` dalının kök (`/`) klasörünü seçin.
+Proje, Ozan Yerli'nin [TurkeyVisited](https://github.com/ozanyerli/turkeyvisited) çalışmasının görünümünü ve temel işlevlerini başlangıç noktası olarak kullanır. İl sınırları, ilk HTML/CSS tasarımı ve GitHub simgesi bu çalışmadan alınmıştır. Özgün projenin MIT lisansı [LICENSE](LICENSE) dosyasındadır.
