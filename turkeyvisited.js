@@ -4,6 +4,8 @@ const MULTIPLE_RECENT_COLOR = "#FFD700";
 const MAP_COLOR = "#fff2e3";
 const STORAGE_KEY = "selectedCities";
 const YEARS_KEY = "visitedCityYears";
+const BACKUP_FORMAT = "visited-turkey-backup";
+const BACKUP_VERSION = 1;
 
 // Keep the selected city names in one place so the map and counter stay in sync.
 let selectedCities;
@@ -39,6 +41,9 @@ const yearForm = document.getElementById("year_form");
 const yearInputs = document.getElementById("year_inputs");
 const infoButton = document.getElementById("info_button");
 const infoPanel = document.getElementById("info_panel");
+const backupFile = document.getElementById("backup_file");
+const backupStatus = document.getElementById("backup_status");
+let availableCities = new Set();
 let boxMode = "hidden";
 let activeCity = null;
 let boxAnchor = null;
@@ -208,6 +213,111 @@ function saveSelection() {
 
 updateCount();
 
+function validateBackup(backup) {
+  if (!backup || typeof backup !== "object" || Array.isArray(backup) ||
+      backup.format !== BACKUP_FORMAT || backup.version !== BACKUP_VERSION) {
+    throw new Error("Bu dosya desteklenen bir Visited Turkey yedeği değil.");
+  }
+  if (!Array.isArray(backup.selectedCities) || !backup.visitedCityYears ||
+      typeof backup.visitedCityYears !== "object" || Array.isArray(backup.visitedCityYears)) {
+    throw new Error("Yedekte şehir veya yıl verisi eksik.");
+  }
+
+  const cities = new Set();
+  for (const name of backup.selectedCities) {
+    if (typeof name !== "string" || !availableCities.has(name) || cities.has(name)) {
+      throw new Error("Yedekte geçersiz veya tekrarlanan bir şehir var.");
+    }
+    cities.add(name);
+  }
+
+  const yearsByCity = {};
+  const currentYear = new Date().getFullYear();
+  for (const [name, years] of Object.entries(backup.visitedCityYears)) {
+    if (!cities.has(name) || !Array.isArray(years)) {
+      throw new Error("Yedekte seçilmemiş bir şehre ait yıl verisi var.");
+    }
+    const uniqueYears = new Set();
+    for (const year of years) {
+      if (!Number.isInteger(year) || year < 1900 || year > currentYear || uniqueYears.has(year)) {
+        throw new Error("Yedekte geçersiz veya tekrarlanan bir ziyaret yılı var.");
+      }
+      uniqueYears.add(year);
+    }
+    yearsByCity[name] = [...uniqueYears].sort((a, b) => b - a);
+  }
+  return { cities: [...cities], yearsByCity };
+}
+
+document.getElementById("export_backup").addEventListener("click", function () {
+  try {
+    const yearsByCity = Object.fromEntries([...selectedCities]
+      .filter(name => cityYears[name]?.length)
+      .map(name => [name, cityYears[name]]));
+    const backup = {
+      format: BACKUP_FORMAT,
+      version: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      selectedCities: [...selectedCities],
+      visitedCityYears: yearsByCity
+    };
+    validateBackup(backup);
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const today = new Date();
+    const date = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"),
+      String(today.getDate()).padStart(2, "0")].join("-");
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `visited-turkey-backup-${date}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    backupStatus.textContent = "JSON yedeği indirildi.";
+  } catch (error) {
+    backupStatus.textContent = `Yedek oluşturulamadı: ${error.message}`;
+  }
+});
+
+document.getElementById("import_backup").addEventListener("click", () => backupFile.click());
+backupFile.addEventListener("change", async function () {
+  const file = backupFile.files[0];
+  if (!file) return;
+  try {
+    if (file.size > 1024 * 1024) throw new Error("Yedek dosyası çok büyük.");
+    const backup = validateBackup(JSON.parse(await file.text()));
+    if (!confirm("Bu yedek mevcut işaretlemelerin ve ziyaret yıllarının yerine geçecek. Devam edilsin mi?")) {
+      backupStatus.textContent = "Yükleme iptal edildi.";
+      return;
+    }
+
+    const previousCities = localStorage.getItem(STORAGE_KEY);
+    const previousYears = localStorage.getItem(YEARS_KEY);
+    try {
+      localStorage.setItem(YEARS_KEY, JSON.stringify(backup.yearsByCity));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(backup.cities));
+    } catch (error) {
+      if (previousYears === null) localStorage.removeItem(YEARS_KEY);
+      else localStorage.setItem(YEARS_KEY, previousYears);
+      if (previousCities === null) localStorage.removeItem(STORAGE_KEY);
+      else localStorage.setItem(STORAGE_KEY, previousCities);
+      throw error;
+    }
+
+    cityYears = backup.yearsByCity;
+    selectedCities = new Set(backup.cities);
+    updateCount();
+    refreshMapColors();
+    hideYearBox();
+    backupStatus.textContent = `${selectedCities.size} şehir yedekten yüklendi.`;
+  } catch (error) {
+    backupStatus.textContent = `Yedek yüklenemedi: ${error.message}`;
+  } finally {
+    backupFile.value = "";
+  }
+});
+
 d3.json("tr-cities.json").then(function (data) {
   const width = 1320;
   const height = 880;
@@ -263,6 +373,9 @@ d3.json("tr-cities.json").then(function (data) {
     .attr("fill", d => cityStyle(d.properties.name).label)
     .attr("pointer-events", "none");
 
+  availableCities = new Set(data.features.map(feature => feature.properties.name));
+  document.getElementById("export_backup").disabled = false;
+  document.getElementById("import_backup").disabled = false;
   scheduleNewYearRefresh();
 }).catch(function (error) {
   console.error("İl haritası yüklenemedi:", error);

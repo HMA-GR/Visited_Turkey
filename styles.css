@@ -149,6 +149,36 @@ html {
     background-color: #EFAE88;
 }
 
+#backup_controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 12px 0 335px;
+}
+
+#backup_controls button {
+    padding: 8px 14px;
+    border: 2px solid white;
+    border-radius: 20px;
+    background: #f4f4f4;
+    cursor: pointer;
+}
+
+#backup_controls button:hover:not(:disabled) {
+    background: #DEF3D7;
+}
+
+#backup_controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#backup_status {
+    min-height: 1.2em;
+    margin: 8px 12px 0 335px;
+    font: 14px sans-serif;
+}
+
 #github_logo {
     margin-left: 1000px;
     opacity: 0.5;
@@ -209,6 +239,10 @@ html {
     }
 
     #github_logo, #download_button {
+        margin-left: 12px;
+    }
+
+    #backup_controls, #backup_status {
         margin-left: 12px;
     }
 }

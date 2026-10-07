@@ -26,6 +26,7 @@ Sonra `http://localhost:8000` adresini açın. GeoJSON dosyası yüklendiği iç
 - Seçimler ve ziyaret yılları bu tarayıcıdaki `localStorage` alanına kaydedilir ve sayfa yenilense de korunur. Başka cihazlara aktarılmaz.
 - **Sıfırla** bütün seçimleri siler.
 - **Haritayı İndir** haritayı ve seçili il sayısını `turkeyvisited.png` olarak indirir.
+- **JSON yedeği indir** seçili illeri ve ziyaret yıllarını bir dosyaya kaydeder. **JSON yedeğini yükle** aynı verileri geri getirir; doğrulanan yedek mevcut tarayıcı kayıtlarının yerine geçmeden önce onay ister. Dosya kullanıcının cihazında kalır; hesap veya veritabanı gerekmez.
 - Dar ekranlarda harita yatay olarak kaydırılabilir.
 - Sol üstteki **i** düğmesi kısa kullanım açıklamasını açar.
 
