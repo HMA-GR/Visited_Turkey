@@ -88,6 +88,10 @@ html {
     transform: translateX(-40px);
 }
 
+#map_container svg {
+    transform: translateY(-40px);
+}
+
 #map_legend {
     box-sizing: border-box;
     width: 245px;
